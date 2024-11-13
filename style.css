@@ -1,4 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   color: #fff;
   background-color: #222831;
+  font-family: "Lato", sans-serif;
+  height: 1vh;
+}
+
+.container {
+  max-width: 850px;
+  margin: 0 auto;
+  overflow: auto;
+  padding: 20px 40px;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.title {
+  text-align: center;
+}
+
+.board {
+  width: 450px;
+  height: 450px;
+  /* border: 1px solid #fff; */
+  margin: 20px auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.board .cell {
+  width: 1fr;
+  border: 1px solid #fff;
+  cursor: pointer;
 }

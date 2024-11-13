@@ -7,6 +7,8 @@ const p2Mark = player2.mark("O");
 const p1Name = player1.userName;
 const p2Name = player2.userName;
 
+const boardContainer = document.querySelector("#board");
+
 // State of the board
 const gameBoard = (function () {
   const board = [];
@@ -85,6 +87,23 @@ const gameController = (function () {
     playGame,
   }
 })();
+
+const screenController = (function() {
+  const renderBoard = (selector, board) => {
+    for (let i = 0; i < board.length; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+
+      selector?.appendChild(cell);
+    }
+  };
+
+  return {
+    renderBoard,
+  }
+})();
+
+screenController.renderBoard(boardContainer, gameBoard.board);
 
 function player(name) {
   const userName = name;
