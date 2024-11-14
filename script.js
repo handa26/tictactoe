@@ -85,25 +85,47 @@ const gameController = (function () {
 
   return {
     playGame,
+    turn,
   }
 })();
 
 const screenController = (function() {
+  const { playGame, turn } = gameController;
+
   const renderBoard = (selector, board) => {
     for (let i = 0; i < board.length; i++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
+      cell.setAttribute("cell-idx", i);
 
       selector?.appendChild(cell);
     }
   };
 
+  const updateCells = (selector) => {
+    selector.forEach((cell) => cell.addEventListener("click", () => {
+      const markDiv = document.createElement("p");
+      if (turn === 1) {
+        markDiv.innerHTML = "X";
+      } else if (turn === 2) {
+        markDiv.innerHTML = "O";
+      }
+
+      cell.appendChild(markDiv);
+      
+      const row = cell.getAttribute("cell-idx");
+      playGame(parseInt(row));
+    }));
+  }
+
   return {
     renderBoard,
+    updateCells,
   }
 })();
 
 screenController.renderBoard(boardContainer, gameBoard.board);
+screenController.updateCells(document.querySelectorAll(".cell"));
 
 function player(name) {
   const userName = name;
