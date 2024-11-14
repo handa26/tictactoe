@@ -39,7 +39,17 @@ body {
 }
 
 .board .cell {
-  width: 1fr;
+  width: 150px;
+  height: 150px;
   border: 1px solid #fff;
   cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board .cell p {
+  font-size: 100px;
+  text-transform: uppercase;
 }
