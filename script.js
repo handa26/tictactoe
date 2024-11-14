@@ -86,6 +86,7 @@ const gameController = (function () {
 
   return {
     playGame,
+    turn,
   }
 })();
 
@@ -105,11 +106,23 @@ const screenController = (function () {
   const updateCells = (selector) => {
     selector.forEach((cell) => cell.addEventListener("click", () => {
       const row = cell.getAttribute("cell-idx");
+      const [playerMark, isWin] = playGame(parseInt(row));
       if (cell.innerHTML === "") {
-        const [playerMark, isWin] = playGame(parseInt(row));
         cell.innerHTML = `<p>${playerMark}</p>`;
       }
+
+      // if (isWin === true) {
+      //   resetCells(selector);
+      // }
     }));
+  };
+
+  function resetCells(selector) {
+    selector.forEach((cell) => cell.innerHTML = "");
+  };
+
+  function showGameInfo(selector, playerTurn) {
+    
   }
 
   return {
