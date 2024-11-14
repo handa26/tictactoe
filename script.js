@@ -54,7 +54,7 @@ const gameController = (function () {
     // Compare the mark players to the win pattern
     for (let i = 0; i < winningPatterns.length; i++) {
       if (JSON.stringify(result) === JSON.stringify(winningPatterns[i])) {
-        alert(`${playerName} win!!!`);
+        console.log(`${playerName} win!!!`);
         return true;
       }
     }
@@ -71,26 +71,26 @@ const gameController = (function () {
     board.splice(index, 1, { mark: playerMark, idx: index });
   }
 
-  const playGame = () => {
-    if (turn === 1) {
-      playerTurn(p1Name, p1Mark);
-      checkGame(p1Name, p1Mark);
-      turn = 2;
-    } else if (turn === 2) {
-      playerTurn(p2Name, p2Mark);
-      checkGame(p2Name, p2Mark);
-      turn = 1;
-    }
+  const playGame = (row) => {
+    const playerMark = turn === 1 ? "X" : "O";
+    const playerName = turn === 1 ? p1Name : p2Name;
+
+    board.splice(row, 1, { mark: playerMark, idx: row });
+
+    const isWin = checkGame(playerName, playerMark);
+
+    if (!isWin) turn = turn === 1 ? 2 : 1;
+
+    return [playerMark, isWin];
   }
 
   return {
     playGame,
-    turn,
   }
 })();
 
-const screenController = (function() {
-  const { playGame, turn } = gameController;
+const screenController = (function () {
+  const { playGame } = gameController;
 
   const renderBoard = (selector, board) => {
     for (let i = 0; i < board.length; i++) {
@@ -104,17 +104,11 @@ const screenController = (function() {
 
   const updateCells = (selector) => {
     selector.forEach((cell) => cell.addEventListener("click", () => {
-      const markDiv = document.createElement("p");
-      if (turn === 1) {
-        markDiv.innerHTML = "X";
-      } else if (turn === 2) {
-        markDiv.innerHTML = "O";
-      }
-
-      cell.appendChild(markDiv);
-      
       const row = cell.getAttribute("cell-idx");
-      playGame(parseInt(row));
+      if (cell.innerHTML === "") {
+        const [playerMark, isWin] = playGame(parseInt(row));
+        cell.innerHTML = `<p>${playerMark}</p>`;
+      }
     }));
   }
 
