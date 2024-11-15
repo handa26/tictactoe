@@ -55,28 +55,11 @@ const gameController = (function () {
     // Compare the mark players to the win pattern
     for (let i = 0; i < winningPatterns.length; i++) {
       if (JSON.stringify(result) === JSON.stringify(winningPatterns[i])) {
-        console.log(`${playerName} win!!!`);
-        // return true;
         return { isWin: true, winner: playerName };
       }
     }
 
     return { isWin: false, winner: null };
-  };
-
-  const playerTurn = (playerName, playerMark) => {
-    let row;
-
-    do {
-      row = prompt(`Choose which row for ${playerName}: `);
-    } while (
-      parseInt(row) < 0 ||
-      parseInt(row) > 8 ||
-      board[parseInt(row)].mark !== ""
-    );
-
-    const index = parseInt(row);
-    board.splice(index, 1, { mark: playerMark, idx: index });
   };
 
   const playGame = (row) => {
