@@ -1,5 +1,5 @@
-const player1 = player("Handa");
-const player2 = player("Joe");
+const player1 = player("Player 1");
+const player2 = player("Player 2");
 
 const p1Mark = player1.mark("X");
 const p2Mark = player2.mark("O");
@@ -30,13 +30,13 @@ const gameBoard = (function () {
 
     // Diagonals
     [0, 4, 8],
-    [2, 4, 6]
+    [2, 4, 6],
   ];
 
   return {
     board,
     winningPatterns,
-  }
+  };
 })();
 
 // Flow of the game
@@ -56,9 +56,12 @@ const gameController = (function () {
     for (let i = 0; i < winningPatterns.length; i++) {
       if (JSON.stringify(result) === JSON.stringify(winningPatterns[i])) {
         console.log(`${playerName} win!!!`);
-        return true;
+        // return true;
+        return { isWin: true, winner: playerName };
       }
     }
+
+    return { isWin: false, winner: null };
   };
 
   const playerTurn = (playerName, playerMark) => {
@@ -66,11 +69,15 @@ const gameController = (function () {
 
     do {
       row = prompt(`Choose which row for ${playerName}: `);
-    } while (parseInt(row) < 0 || parseInt(row) > 8 || board[parseInt(row)].mark !== "");
+    } while (
+      parseInt(row) < 0 ||
+      parseInt(row) > 8 ||
+      board[parseInt(row)].mark !== ""
+    );
 
     const index = parseInt(row);
     board.splice(index, 1, { mark: playerMark, idx: index });
-  }
+  };
 
   const playGame = (row) => {
     const playerMark = turn === 1 ? "X" : "O";
@@ -78,17 +85,17 @@ const gameController = (function () {
 
     board.splice(row, 1, { mark: playerMark, idx: row });
 
-    const isWin = checkGame(playerName, playerMark);
+    const { isWin, winner } = checkGame(playerName, playerMark);
 
     if (!isWin) turn = turn === 1 ? 2 : 1;
 
-    return [playerMark, isWin, turn];
-  }
+    return [playerMark, isWin, turn, winner];
+  };
 
   return {
     playGame,
     turn,
-  }
+  };
 })();
 
 const screenController = (function () {
@@ -107,33 +114,50 @@ const screenController = (function () {
   };
 
   const updateCells = (selector) => {
-    selector.forEach((cell) => cell.addEventListener("click", () => {
-      const row = cell.getAttribute("cell-idx");
-      const [playerMark, isWin, turn] = playGame(parseInt(row));
-      if (cell.innerHTML === "") {
-        cell.innerHTML = `<p>${playerMark}</p>`;
-      }
+    selector.forEach((cell) =>
+      cell.addEventListener("click", () => {
+        const row = cell.getAttribute("cell-idx");
+        const [playerMark, isWin, turn, winner] = playGame(parseInt(row));
+        if (cell.innerHTML === "") {
+          cell.innerHTML = `<p>${playerMark}</p>`;
+        }
 
-      showGameInfo(displayInfo, turn);
+        showGameInfo(displayInfo, turn);
 
-      // if (isWin === true) {
-      //   resetCells(selector);
-      // }
-    }));
+        // if (isWin === true) {
+        //   resetCells(selector);
+        // }
+
+        if (isWin === true) {
+          displayInfo.innerHTML = `${winner} winner!!!`;
+          disableCells(selector);
+        }
+      })
+    );
   };
 
   function resetCells(selector) {
-    selector.forEach((cell) => cell.innerHTML = "");
-  };
+    selector.forEach((cell) => (cell.innerHTML = ""));
+  }
 
   function showGameInfo(selector, playerTurn) {
-    return playerTurn === 1 ? selector.innerHTML = "X player 1 turn" : selector.innerHTML = "O player 2 turn";
+    return playerTurn === 1
+      ? (selector.innerHTML = "X player 1 turn")
+      : (selector.innerHTML = "O player 2 turn");
+  }
+
+  function disableCells(selector) {
+    console.log("disableCells run");
+    selector.forEach((cell) => {
+      const clonedCell = cell.cloneNode(true);
+      cell.replaceWith(clonedCell);
+    });
   }
 
   return {
     renderBoard,
     updateCells,
-  }
+  };
 })();
 
 screenController.renderBoard(boardContainer, gameBoard.board);
