@@ -8,6 +8,7 @@ const p1Name = player1.userName;
 const p2Name = player2.userName;
 
 const boardContainer = document.querySelector("#board");
+const displayInfo = document.querySelector("#display-info");
 
 // State of the board
 const gameBoard = (function () {
@@ -81,7 +82,7 @@ const gameController = (function () {
 
     if (!isWin) turn = turn === 1 ? 2 : 1;
 
-    return [playerMark, isWin];
+    return [playerMark, isWin, turn];
   }
 
   return {
@@ -91,7 +92,9 @@ const gameController = (function () {
 })();
 
 const screenController = (function () {
-  const { playGame } = gameController;
+  const { playGame, turn } = gameController;
+
+  showGameInfo(displayInfo, turn);
 
   const renderBoard = (selector, board) => {
     for (let i = 0; i < board.length; i++) {
@@ -106,10 +109,12 @@ const screenController = (function () {
   const updateCells = (selector) => {
     selector.forEach((cell) => cell.addEventListener("click", () => {
       const row = cell.getAttribute("cell-idx");
-      const [playerMark, isWin] = playGame(parseInt(row));
+      const [playerMark, isWin, turn] = playGame(parseInt(row));
       if (cell.innerHTML === "") {
         cell.innerHTML = `<p>${playerMark}</p>`;
       }
+
+      showGameInfo(displayInfo, turn);
 
       // if (isWin === true) {
       //   resetCells(selector);
@@ -122,7 +127,7 @@ const screenController = (function () {
   };
 
   function showGameInfo(selector, playerTurn) {
-    
+    return playerTurn === 1 ? selector.innerHTML = "X player 1 turn" : selector.innerHTML = "O player 2 turn";
   }
 
   return {
