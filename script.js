@@ -45,20 +45,19 @@ const gameController = (function () {
   let turn = 1;
 
   const checkGame = (playerName, playerMark) => {
-    let result = [];
-    const marks = board.filter((mark) => {
-      if (mark.mark === playerMark) {
-        result.push(mark.idx);
-      }
-    });
-
-    // Compare the mark players to the win pattern
+    let result = board
+      .filter((mark) => mark.mark === playerMark)
+      .map((mark) => mark.idx);
+  
+    console.log(`checkGame result[]:`, result);
+  
+    // Compare player's marks with winning patterns
     for (let i = 0; i < winningPatterns.length; i++) {
-      if (JSON.stringify(result) === JSON.stringify(winningPatterns[i])) {
+      if (winningPatterns[i].every((idx) => result.includes(idx))) {
         return { isWin: true, winner: playerName };
       }
     }
-
+  
     return { isWin: false, winner: null };
   };
 
