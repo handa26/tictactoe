@@ -10,6 +10,8 @@ const p2Name = player2.userName;
 const boardContainer = document.querySelector("#board");
 const displayInfo = document.querySelector("#display-info");
 const btnReset = document.querySelector("#btn-reset");
+const overlay = document.querySelector("#overlay");
+const displayWinnerText = document.querySelector("#display-winner h2");
 
 // State of the board
 const gameBoard = (function () {
@@ -122,8 +124,9 @@ const screenController = (function () {
         showGameInfo(displayInfo, turn);
   
         if (isWin === true) {
-          displayInfo.innerHTML = `${winner} winner!!!`;
           btnReset.style.display = "block";
+          overlay.style.display = "flex";
+          displayWinnerText.innerHTML = `${winner} winner!!!`;
         }
       });
     });
@@ -168,6 +171,7 @@ screenController.updateCells(document.querySelectorAll(".cell"));
 btnReset.addEventListener("click", () => {
   screenController.resetGame();
   btnReset.style.display = "none";
+  overlay.style.display = "none";
 });
 
 function player(name) {

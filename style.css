@@ -38,9 +38,36 @@ h3 {
   height: 450px;
   /* border: 1px solid #fff; */
   margin: 20px auto;
+  position: relative;
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #2228318f;
+
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.display-winner {
+  width: 70%;
+  height: 200px;
+  background-color: #f1f1f1;
+  color: #222831;
+  margin: 0 auto;
+  padding: 10px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .board .cell {
@@ -60,10 +87,12 @@ h3 {
 }
 
 .btn-reset {
-  display: none;
+  /* display: none; */
   padding: 10px;
   margin: 20px auto;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  background-color: #222831;
+  color: #f1f1f1;
 }
