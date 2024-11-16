@@ -58,3 +58,12 @@ h3 {
   font-size: 100px;
   text-transform: uppercase;
 }
+
+.btn-reset {
+  display: none;
+  padding: 10px;
+  margin: 20px auto;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}

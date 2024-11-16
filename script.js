@@ -9,6 +9,7 @@ const p2Name = player2.userName;
 
 const boardContainer = document.querySelector("#board");
 const displayInfo = document.querySelector("#display-info");
+const btnReset = document.querySelector("#btn-reset");
 
 // State of the board
 const gameBoard = (function () {
@@ -49,8 +50,6 @@ const gameController = (function () {
       .filter((mark) => mark.mark === playerMark)
       .map((mark) => mark.idx);
   
-    console.log(`checkGame result[]:`, result);
-  
     // Compare player's marks with winning patterns
     for (let i = 0; i < winningPatterns.length; i++) {
       if (winningPatterns[i].every((idx) => result.includes(idx))) {
@@ -74,9 +73,21 @@ const gameController = (function () {
     return [playerMark, isWin, turn, winner];
   };
 
+  const resetGame = () => {
+    gameBoard.board = Array.from({ length: 9 }, (_, index) => ({
+      mark: "",
+      idx: index,
+    }));
+
+    board.splice(0, board.length, ...gameBoard.board);
+
+    turn = 1;
+  };
+
   return {
     playGame,
     turn,
+    resetGame,
   };
 })();
 
@@ -96,26 +107,26 @@ const screenController = (function () {
   };
 
   const updateCells = (selector) => {
-    selector.forEach((cell) =>
-      cell.addEventListener("click", () => {
-        const row = cell.getAttribute("cell-idx");
-        const [playerMark, isWin, turn, winner] = playGame(parseInt(row));
-        if (cell.innerHTML === "") {
-          cell.innerHTML = `<p>${playerMark}</p>`;
+    selector.forEach((cell) => {
+      const clonedCell = cell.cloneNode(true);
+      cell.replaceWith(clonedCell);
+  
+      clonedCell.addEventListener("click", () => {
+        const row = clonedCell.getAttribute("cell-idx");
+        const [playerMark, isWin, turn, winner] = gameController.playGame(parseInt(row));
+  
+        if (clonedCell.innerHTML === "") {
+          clonedCell.innerHTML = `<p>${playerMark}</p>`;
         }
-
+  
         showGameInfo(displayInfo, turn);
-
-        // if (isWin === true) {
-        //   resetCells(selector);
-        // }
-
+  
         if (isWin === true) {
           displayInfo.innerHTML = `${winner} winner!!!`;
-          disableCells(selector);
+          btnReset.style.display = "block";
         }
-      })
-    );
+      });
+    });
   };
 
   function resetCells(selector) {
@@ -129,21 +140,35 @@ const screenController = (function () {
   }
 
   function disableCells(selector) {
-    console.log("disableCells run");
     selector.forEach((cell) => {
       const clonedCell = cell.cloneNode(true);
       cell.replaceWith(clonedCell);
     });
   }
 
+  function resetGame() {
+    gameController.resetGame(); // Reset game logic
+  
+    const cells = document.querySelectorAll(".cell");
+    resetCells(cells); // Clear all cell contents
+    updateCells(cells); // Add fresh listeners
+    showGameInfo(displayInfo, gameController.turn); // Reset display info
+  }
+  
   return {
     renderBoard,
     updateCells,
+    resetGame,
   };
 })();
 
 screenController.renderBoard(boardContainer, gameBoard.board);
 screenController.updateCells(document.querySelectorAll(".cell"));
+
+btnReset.addEventListener("click", () => {
+  screenController.resetGame();
+  btnReset.style.display = "none";
+});
 
 function player(name) {
   const userName = name;
