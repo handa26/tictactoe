@@ -62,6 +62,21 @@ const gameController = (function () {
     return { isWin: false, winner: null };
   };
 
+  const isDraw = (playerMark) => {
+    const allFilled = board.every(cell => cell.mark !== "");
+  
+    // Check if there's no winning pattern
+    const noWin = !winningPatterns.some(pattern =>
+      pattern.every(idx => board[idx].mark === "X") ||
+      pattern.every(idx => board[idx].mark === "O")
+    );
+
+    // console.log("isDraw allFilled: ", allFilled);
+    // console.log("isDraw noWin: ", noWin);
+
+    return allFilled && noWin;
+  };
+
   const playGame = (row) => {
     const playerMark = turn === 1 ? "X" : "O";
     const playerName = turn === 1 ? p1Name : p2Name;
@@ -90,6 +105,7 @@ const gameController = (function () {
     playGame,
     turn,
     resetGame,
+    isDraw,
   };
 })();
 
@@ -127,6 +143,12 @@ const screenController = (function () {
           btnReset.style.display = "block";
           overlay.style.display = "flex";
           displayWinnerText.innerHTML = `${winner} winner!!!`;
+        }
+
+        if (gameController.isDraw(playerMark)) {
+          btnReset.style.display = "block";
+          overlay.style.display = "flex";
+          displayWinnerText.innerHTML = `Draw!!!`;
         }
       });
     });
