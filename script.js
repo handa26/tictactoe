@@ -1,5 +1,15 @@
-const player1 = player("Player 1");
-const player2 = player("Player 2");
+class Player {
+  constructor(userName) {
+    this.userName = userName;
+  }
+
+  mark(str) {
+    return str;
+  }
+}
+
+const player1 = new Player("Player 1");
+const player2 = new Player("Player 2");
 
 const p1Mark = player1.mark("X");
 const p2Mark = player2.mark("O");
